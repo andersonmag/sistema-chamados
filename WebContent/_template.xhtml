@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:outputStylesheet name="primeicons/primeicons.css"
+	library="primefaces" />
+
+<h:head />
+
+<h:body>
+	<div id="cabecalho">
+		<h1>
+			<ui:insert name="titulo"></ui:insert>
+		</h1>
+
+		<p>
+			<ui:insert name="subtitulo"></ui:insert>
+		</p>
+
+		<h:form style="margin: 15px">
+			<p:menuButton value=" Menu de Usuario" style="pading: 4px">
+				<p:menuitem value=" Index" action="index?faces-redirect=true"
+					icon="pi pi-home" />
+				<p:menuitem value=" Página Funcionario" style="pading: 4px"
+					action="atendChamados?faces-redirect=true" icon="pi pi-pencil" />
+			</p:menuButton>
+		</h:form>
+
+	</div>
+
+	<div id="conteudo">
+
+		<ui:insert name="conteudo"></ui:insert>
+
+	</div>
+</h:body>
+</html>

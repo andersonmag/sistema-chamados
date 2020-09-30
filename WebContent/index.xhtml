@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:outputStylesheet name="primeicons/primeicons.css"
+	library="primefaces" />
+
+<h:head />
+
+<ui:composition template="_template.xhtml">
+
+	<ui:define name="titulo">
+		<p:outputPanel style="text-align: center">Sistema de Chamados</p:outputPanel>
+	</ui:define>
+
+	<ui:define name="subtitulo">
+		<p style="text-align: center;">Página destinada a Clietes, que
+			poderão criar Chamados, ver todos os Chamados já existentes e é por
+			aqui onde você vizualiza o Status do seu Chamado.</p>
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+
+		<h:form style="margin: 15px">
+			<p:commandButton value="Novo Chamado" style="margin-bottom: 5px"
+				onclick="PF('dialogForm').show()">
+			</p:commandButton>
+
+		</h:form>
+
+
+		<p:dialog responsive="true" widgetVar="teste" modal="true"
+			resizable="false" dynamic="true" height="auto" width="auto">
+
+			<p:dataList value="#{MBCliente.chamadoSelecionado}" var="usuario"
+				id="usuarios" title="usuarios" type="definition">
+
+				<f:facet name="header" styleClass="pi pi-circle-on">#{MBCliente.chamadoSelecionado.id} -- #{MBCliente.chamadoSelecionado.titulo}</f:facet>
+
+
+				<h:panelGrid columns="3" style="width:100%"
+					columnClasses="logo,detail">
+
+					<p:outputPanel>
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText value="Titulo: " />
+							<h:outputText value="#{MBCliente.chamadoSelecionado.titulo}"
+								style="font-weight: bold" />
+
+							<h:outputText value="Descrição: " />
+							<h:outputText value="#{MBCliente.chamadoSelecionado.descricao}"
+								style="font-weight: bold" />
+						</h:panelGrid>
+
+						<h:outputText
+							rendered="#{MBCliente.chamadoSelecionado.status == 'PENDENTE'}"
+							styleClass="pi pi-circle-on"
+							style="font-size: 0.8rem ; display:block; font-weight: bold; text-align: center"
+							value="#{MBCliente.chamadoSelecionado.status}">
+						</h:outputText>
+						<h:outputText
+							rendered="#{MBCliente.chamadoSelecionado.status == 'EM_ANDAMENTO'}"
+							styleClass="pi pi-circle-on"
+							style="color: green; font-size: 0.8rem ; display:block; font-weight: bold; text-align: center"
+							value=" #{MBCliente.chamadoSelecionado.status}">
+						</h:outputText>
+						<h:outputText
+							rendered="#{MBCliente.chamadoSelecionado.status == 'FINALIZADO'}"
+							styleClass="pi pi-circle-on"
+							style="font-size: 0.8rem ; display:block; font-weight: bold; text-align: center"
+							value="#{MBCliente.chamadoSelecionado.status}">
+						</h:outputText>
+
+						<br />
+
+						<h:outputText style="text-align: center;"
+							rendered="#{MBCliente.chamadoSelecionado.observacao == null}"
+							value="Em breve será respondido!">
+						</h:outputText>
+
+						<h:outputText
+							rendered="#{MBCliente.chamadoSelecionado.observacao != null}"
+							value="Observação: ">
+						</h:outputText>
+
+						<h:outputText
+							rendered="#{MBCliente.chamadoSelecionado.observacao != null}"
+							value="#{MBCliente.chamadoSelecionado.observacao}">
+						</h:outputText>
+
+
+					</p:outputPanel>
+				</h:panelGrid>
+
+			</p:dataList>
+
+		</p:dialog>
+
+		<h:panelGrid>
+			<h:form id="form">
+
+				<p:growl id="growl" sticky="true" />
+
+				<p:dataTable value="#{MBCliente.chamados}" var="c" id="chamados"
+					emptyMessage="Nenhum item encontrado!" title="chamados" rows="5"
+					paginator="true">
+
+					<p:column sortBy="#{c.id}" style="text-align:center;">
+						<f:facet name="header">ID</f:facet>
+						<h:outputText value="#{c.id}" />
+					</p:column>
+
+					<p:column style="text-align:center;" filterBy="#{c.titulo}"
+						filterMatchMode="startsWith">
+						<f:facet name="header">Titulo</f:facet>
+						<h:outputText value="#{c.titulo}" />
+					</p:column>
+
+					<p:column sortBy="#{c.data}" style="text-align:center;">
+						<f:facet name="header">Data</f:facet>
+						<h:outputText value="#{c.converterData()}" />
+					</p:column>
+
+					<p:column style="text-align:center">
+						<f:facet name="header">Vizualizar</f:facet>
+						<p:commandLink update=":usuarios" styleClass="pi pi-search"
+							title="Vizualizar" oncomplete="PF('teste').show()">
+							<f:setPropertyActionListener value="#{c}"
+								target="#{MBCliente.chamadoSelecionado}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column sortBy="#{c.status}">
+						<f:facet name="header">Status</f:facet>
+						<h:outputText rendered="#{ c.status == 'PENDENTE'}"
+							styleClass="pi pi-circle-on" value=" #{c.status}">
+						</h:outputText>
+						<h:outputText rendered="#{c.status == 'EM_ANDAMENTO'}"
+							styleClass="pi pi-circle-on" style="color: green"
+							value=" #{c.status}">
+						</h:outputText>
+						<h:outputText rendered="#{c.status == 'FINALIZADO'}"
+							styleClass="pi pi-circle-on" value=" #{ c.status}"
+							style="text-align:center;">
+						</h:outputText>
+					</p:column>
+
+
+				</p:dataTable>
+
+			</h:form>
+		</h:panelGrid>
+
+		<p:dialog responsive="true" widgetVar="dialogForm" modal="true"
+			resizable="false" dynamic="true" height="auto" width="auto" header="">
+
+			<h:form id="formChamado">
+				<p:fieldset legend="Cadastrar Chamado">
+
+					<h:panelGrid columns="2">
+
+						<p:outputLabel value="Titulo: " for="titulo" />
+						<p:inputText required="true" requiredMessage="Digite o Titulo"
+							id="titulo" value="#{MBCliente.chamado.titulo}" />
+
+						<p:outputLabel value="Descrição: " for="descricao" />
+						<p:inputText required="true" requiredMessage="Digite a Descrição"
+							id="descricao" value="#{MBCliente.chamado.descricao}" />
+
+						<p:selectOneMenu required="true"
+							requiredMessage="Selecione um Cliente"
+							value="#{MBCliente.clienteID}" for="cliente" id="cliente">
+							<f:selectItem itemLabel="Selecione..." itemDisabled="true" />
+							<f:selectItems value="#{MBCliente.clientes}" var="cliente"
+								itemLabel="#{cliente.nome}" itemValue="#{cliente.id}" />
+						</p:selectOneMenu>
+
+						<p:commandButton style="margin-left:5px;" value="Salvar"
+							process="@form @this" update="@form :form"
+							action="#{MBCliente.salvar}">
+						</p:commandButton>
+
+					</h:panelGrid>
+				</p:fieldset>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+
+</html>

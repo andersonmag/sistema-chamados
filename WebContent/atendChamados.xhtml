@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:outputStylesheet name="primeicons/primeicons.css"
+	library="primefaces" />
+
+<h:head />
+
+<ui:composition template="_template.xhtml">
+
+	<ui:define name="titulo">
+		<p:outputPanel style="text-align: center">Página de Atendimento à Chamados</p:outputPanel>
+	</ui:define>
+
+	<ui:define name="subtitulo">
+		<p style="text-align: center;">Altere, Responda e Finalize chamados para atender aos Clientes.</p>
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:panelGrid>
+			<h:form id="form">
+
+				<p:growl id="growl" sticky="true" />
+
+				<p:dataTable value="#{MBFunc.chamados}" var="c" id="chamados"
+					emptyMessage="Nenhum item encontrado!" title="chamados" rows="5"
+					paginator="true">
+
+					<p:column sortBy="#{c.id}" style="text-align:center;">
+						<f:facet name="header">ID</f:facet>
+						<h:outputText value="#{c.id}" />
+					</p:column>
+
+					<p:column style="text-align:center;" filterBy="#{c.titulo}"
+						filterMatchMode="startsWith">
+						<f:facet name="header">Titulo</f:facet>
+						<h:outputText value="#{c.titulo}" />
+					</p:column>
+
+					<p:column sortBy="#{c.data}" style="text-align:center;">
+						<f:facet name="header">Data</f:facet>
+						<h:outputText value="#{c.converterData()}" />
+					</p:column>
+
+					<p:column sortBy="#{c.status}" style="text-align:center;">
+						<f:facet name="header">Status</f:facet>
+						<h:outputText rendered="#{c.status == 'PENDENTE'}"
+							styleClass="pi pi-circle-on" value=" #{c.status}">
+						</h:outputText>
+						<h:outputText rendered="#{c.status == 'EM_ANDAMENTO'}"
+							styleClass="pi pi-circle-on" style="color: green"
+							value=" #{c.status}">
+						</h:outputText>
+						<h:outputText rendered="#{c.status == 'FINALIZADO'}"
+							styleClass="pi pi-circle-on" value=" #{c.status}">
+						</h:outputText>
+					</p:column>
+
+					<p:column style="text-align:center">
+						<f:facet name="header">Atender</f:facet>
+						<p:commandLink update=":formChamado" styleClass="pi pi-comment"
+							title="Vizualizar" oncomplete="PF('dialogForm').show()"
+							style="font-size: 1.5rem">
+							<f:setPropertyActionListener value="#{c}"
+								target="#{MBFunc.chamadoSelecionado}" />
+						</p:commandLink>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+		</h:panelGrid>
+
+		<p:dialog responsive="true" widgetVar="dialogForm" modal="true"
+			resizable="false" dynamic="true" height="auto" width="auto">
+
+			<f:facet name="header" styleClass="pi pi-circle-on">
+				----     Atendimento
+			</f:facet>
+
+			<h:form id="formChamado">
+				<p:fieldset title="Atender">
+
+					<h:panelGrid columns="1">
+
+						<h:outputText value="Titulo: #{MBFunc.chamadoSelecionado.titulo}" />
+
+						<h:outputText style="text-align: center;"
+							value="Descrição: #{MBFunc.chamadoSelecionado.descricao}" />
+						<br />
+
+						<p:selectOneMenu required="true"
+							requiredMessage="Selecione um Funcionario"
+							value="#{MBFunc.funId}" for="func" id="func">
+							<f:selectItem itemLabel="Meu nome é..." itemDisabled="true" />
+							<f:selectItems value="#{MBFunc.funcionarios}" var="func"
+								itemLabel="#{func.nome}" itemValue="#{func.id}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Observação: " />
+						<p:inputTextarea id="observacao"
+							placeholder="Prezado, #{MBFunc.chamadoSelecionado.cliente.nome} ..."
+							rows="5" cols="30"
+							value="#{MBFunc.chamadoSelecionado.observacao}"
+							autoResize="false" />
+
+						<h:panelGrid columns="2" style="margin-bottom:10px"
+							cellpadding="5">
+							<p:outputLabel for="console" value="Status:" />
+							<p:selectOneRadio id="console"
+								value="#{MBFunc.chamadoSelecionado.status}" unselectable="true"
+								required="true" requiredMessage="Selecione um status">
+								<f:selectItems value="#{MBFunc.status}" var="status" rendered="#{status != 'PENDENTE'}"
+									itemValue="#{status}" itemLabel="#{status}" />
+							</p:selectOneRadio>
+						</h:panelGrid>
+
+						<p:commandButton style="margin-left:5px;" value="Concluir"
+							process="@form @this" update="@form :form"
+							action="#{MBFunc.atualizar}">
+						</p:commandButton>
+
+					</h:panelGrid>
+				</p:fieldset>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+
+
+</html>
