@@ -11,8 +11,6 @@ create table usuario (
 	
 );
 
-DROP TABLE chamado;
-
 create table chamado(
 
 	id INTEGER PRIMARY KEY,
