@@ -94,13 +94,15 @@ public class ChamadoDAO implements Serializable {
 					
 					while (result.next()) {
 						chamados.add(
-								new Chamado(result.getLong(1),
-										result.getString(2),
-										result.getString(3), 
-										new Usuario(result.getLong(7), result.getString(8), TipoUsuario.valueOf(result.getString(9))),
-										result.getDate(4).toLocalDate(),
-										StatusChamado.valueOf(result.getString(5)),
-										result.getString(6)));
+						        Chamado.builder().id(result.getLong("id"))
+						                         .titulo(result.getString("titulo"))
+						                         .descricao(result.getString("descricao"))
+						                         .data(result.getDate("data").toLocalDate())
+						                         .cliente(new Usuario(result.getLong("cliente_id"), result.getString("nome"), 
+						                                                 TipoUsuario.valueOf(result.getString("tipo"))))
+						                         .status(StatusChamado.valueOf(result.getString("status")))
+						                         .observacao(result.getString("observacao"))
+						               .build());
 					}
 				}
 
@@ -124,13 +126,14 @@ public class ChamadoDAO implements Serializable {
 
 					while (result.next()) {
 						chamados.add(
-								new Chamado(result.getLong(1),
-										result.getString(2),
-										result.getString(3), 
-										new Usuario(result.getLong(7), result.getString(8), TipoUsuario.valueOf(result.getString(9))),
-										result.getDate(4).toLocalDate(),
-										StatusChamado.valueOf(result.getString(5)),
-										result.getString(6)));
+		                        Chamado.builder().id(result.getLong("id"))
+                                                .titulo(result.getString("titulo"))
+                                                .descricao(result.getString("descricao"))
+                                                .data(result.getDate("data").toLocalDate())
+                                                .cliente(new Usuario(result.getLong("cliente_id"), result.getString("nome"), 
+                                                                        TipoUsuario.valueOf(result.getString("tipo"))))
+                                                .status(StatusChamado.valueOf(result.getString("status")))
+                                        .build());
 					}
 
 				}

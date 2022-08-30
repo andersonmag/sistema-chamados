@@ -45,7 +45,9 @@
 
 					<p:column sortBy="#{c.data}" style="text-align:center;">
 						<f:facet name="header">Data</f:facet>
-						<h:outputText value="#{c.converterData()}" />
+						<h:outputText value="#{c.data}">
+						  <f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+						</h:outputText>
 					</p:column>
 
 					<p:column sortBy="#{c.status}" style="text-align:center;">
