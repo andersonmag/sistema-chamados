@@ -14,9 +14,13 @@ public class UsuarioDAO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	@Inject
-	private Connection connection;
+	private final Connection connection;
 	private String sql;
+	
+	@Inject
+	public UsuarioDAO(Connection connection) {
+        this.connection = connection;
+    }
 	
 	public List<Usuario> buscarTodos(TipoUsuario tipo) {
 		List<Usuario> usuarios = new ArrayList<Usuario>();
@@ -34,9 +38,7 @@ public class UsuarioDAO implements Serializable {
 										TipoUsuario.valueOf(result.getString(3))));
 				}
 			}
-			
-			this.connection.commit();
-		
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

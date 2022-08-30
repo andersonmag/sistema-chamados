@@ -18,17 +18,19 @@ public class ChamadoDAO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private Connection connection;
+	private final Connection connection;
 	private String sql;
+	
+	@Inject
+	public ChamadoDAO(Connection connection) {
+        this.connection = connection;
+    }
 
 	public boolean salvar(Chamado chamado) {
 
 		boolean salvou = false;
 		sql = "INSERT INTO chamado(titulo, descricao, cliente_id, data, status)"
 				+  " VALUES(?, ?, ?, ?, ?)";
-
-		System.out.println(sql);
 
 		try(PreparedStatement statement = this.connection.prepareStatement(sql)) {
 
@@ -38,11 +40,10 @@ public class ChamadoDAO implements Serializable {
 			statement.setDate(4, Date.valueOf(chamado.getData()));
 			statement.setString(5, chamado.getStatus().toString());
 
-			statement.execute();
+			statement.executeUpdate();
 			this.connection.commit();
 
 			salvou = true;
-
 		} catch (SQLException e) {
 			try {
 				this.connection.rollback();
@@ -67,9 +68,8 @@ public class ChamadoDAO implements Serializable {
 			statement.setString(3, chamado.getStatus().toString());	
 			statement.setLong(4, chamado.getId());
 
-			statement.execute();
+			statement.executeUpdate();
 			this.connection.commit();
-
 
 		} catch (SQLException e) {
 			try {
@@ -134,8 +134,6 @@ public class ChamadoDAO implements Serializable {
 					}
 
 				}
-
-				this.connection.commit();
 
 			} catch (Exception e) {
 				throw new RuntimeException(e);

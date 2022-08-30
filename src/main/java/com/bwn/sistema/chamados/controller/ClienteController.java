@@ -24,17 +24,22 @@ public class ClienteController implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private ChamadoDAO chamadoDAO;
+	private final ChamadoDAO chamadoDAO;
+	private final UsuarioDAO usuarioDAO;
 	
-	@Inject
-	private UsuarioDAO usuarioDAO;
-	
-	private Chamado chamado = new Chamado();
+	private Chamado chamado;
 	private List<Chamado> chamados;
 	private Long clienteID;
 	private Chamado chamadoSelecionado;
-	private Usuario cliente = new Usuario();
+	private Usuario cliente;
+
+	@Inject
+	public ClienteController(ChamadoDAO chamadoDAO, UsuarioDAO usuarioDAO) {
+        this.chamadoDAO = chamadoDAO;
+        this.usuarioDAO = usuarioDAO;
+        chamado = new Chamado();
+        cliente = new Usuario();
+    }
 	
 	public Usuario getCliente() {
 		return cliente;

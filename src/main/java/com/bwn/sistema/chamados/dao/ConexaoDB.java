@@ -11,8 +11,8 @@ public class ConexaoDB {
 
 	private Connection connection;
 	private String url = "jdbc:postgresql://localhost:5432/call_chamados";
-	private String user = "";
-	private String password = "";
+	private String user = "postgres";
+	private String password = "admin";
 
 	@Produces
 	@RequestScoped
