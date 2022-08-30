@@ -2,7 +2,6 @@ package com.bwn.sistema.chamados.controller;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -24,25 +23,23 @@ import com.bwn.sistema.chamados.model.Usuario;
 public class FuncionarioController implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	private UsuarioDAO usuarioDAO;
-
-	@Inject
-	private ChamadoDAO chamadoDAO;
+	
+	private final UsuarioDAO usuarioDAO;
+	private final ChamadoDAO chamadoDAO;
+	
 	private List<Chamado> chamados;
 	private Chamado chamadoSelecionado;
-	private Chamado chamado = new Chamado();
+	private Chamado chamado;
 	private Long funId;
-	private Usuario funcionario = new Usuario();
-
-	public Long getFunId() {
-		return funId;
-	}
-
-	public void setFunId(Long funId) {
-		this.funId = funId;
-	}
+	private Usuario funcionario;
+	
+	@Inject
+	public FuncionarioController(UsuarioDAO usuarioDAO, ChamadoDAO chamadoDAO) {
+	    this.usuarioDAO = usuarioDAO;
+        this.chamadoDAO = chamadoDAO;
+        chamado = new Chamado();
+	    funcionario = new Usuario();
+    }
 
 	public void atualizar() {
 
@@ -103,4 +100,12 @@ public class FuncionarioController implements Serializable{
 	public void setChamado(Chamado chamado) {
 		this.chamado = chamado;
 	}
+
+    public Long getFunId() {
+        return funId;
+    }
+
+    public void setFunId(Long funId) {
+        this.funId = funId;
+    }
 }
